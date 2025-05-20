@@ -15,7 +15,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('This bot can do a random coin flip for you, type /coin')
 
 async def coin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f'It\'s {random.choice(['heads', 'tails'])}!')
+    await update.message.reply_text(f"It\'s {random.choice(['heads', 'tails'])}!")
 
 # Responses
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     # Commands
     app.add_handler(CommandHandler('start', start_command))
-    app.add_handler(CommandHandler('help', start_command))
+    app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('coin', coin_command))
 
     # Messages
