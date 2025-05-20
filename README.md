@@ -7,6 +7,8 @@ This is a simple Telegram bot written in Python:
 - `/start` — Launches the bot and sends a welcome message.  
 - `/help` — Shows available commands and what the bot can do.  
 - `/coin` — Flips a coin and returns a random result: **heads** or **tails**.
+- `/dice` — Rolls a 6 sided dice.
+- `/magicball` — Prints a random Magic 8 Ball response.
 
 ---
 

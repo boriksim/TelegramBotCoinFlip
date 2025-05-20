@@ -1,21 +1,13 @@
 import random
 
-import config
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackContext
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
+import config
 from config import BOT_USERNAME
 
+from commands import start_command, help_command, coin_command, dice_command, magicball_command
 
-# Commands
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Hello, type /coin to do a coin flip!')
-
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('This bot can do a random coin flip for you, type /coin')
-
-async def coin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f"It\'s {random.choice(['heads', 'tails'])}!")
 
 # Responses
 
@@ -23,7 +15,8 @@ def handle_response(text: str) -> str:
     processed: str = text.lower()
     if 'aboba' in processed:
         return 'aboba'
-    return 'Type /coin to do a coin flip'
+    return 'I don\'t understand that, please type /coin, /dice or /magicball to get an answer'
+
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
@@ -43,9 +36,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print('Bot:', response)
     await update.message.reply_text(response)
 
+
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
-
 
 
 if __name__ == '__main__':
@@ -56,6 +49,8 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('coin', coin_command))
+    app.add_handler(CommandHandler('dice', dice_command))
+    app.add_handler(CommandHandler('magicball', magicball_command))
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
