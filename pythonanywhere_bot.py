@@ -1,10 +1,38 @@
+import random
+
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 import config
 from config import BOT_USERNAME
 
-from commands import start_command, help_command, coin_command, dice_command, magicball_command
+
+# Commands
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('Hello, type /coin, /dice or /magicball!')
+
+
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('Type /coin, /dice or /magicball to get an answer')
+
+
+async def coin_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f"It\'s <i>{random.choice(['heads', 'tails'])}</i>!", parse_mode='HTML')
+
+
+async def dice_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f"You rolled a <b>{random.randint(1, 6)}</b>", parse_mode='HTML')
+
+
+responses = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes – definitely.", "You may rely on it.",
+             "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.",
+             "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.",
+             "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.",
+             "Outlook not so good.", "Very doubtful."]
+
+
+async def magicball_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f"The magic ball says: <i>{random.choice(responses)}</i>", parse_mode='HTML')
 
 
 # Responses

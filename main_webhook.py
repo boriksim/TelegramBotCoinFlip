@@ -1,3 +1,6 @@
+import os
+from flask import Flask, request
+
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
@@ -6,6 +9,20 @@ from config import BOT_USERNAME
 
 from commands import start_command, help_command, coin_command, dice_command, magicball_command
 
+app = Flask(__name__)
+telegram_app = Application.builder().token(config.TOKEN).build()
+
+@app.post(f"/{config.TOKEN}")
+async def webhook(request_):
+    update = Update.de_json(request_.json, telegram_app.bot)
+    await telegram_app.process_update(update)
+    return "OK"
+
+@app.route('/set_webhook', methods=["GET"])
+def set_webhook():
+    url = f"https://{config.APP_NAME}.pythonanywhere.com/{config.TOKEN}"
+    telegram_app.bot.set_webhook(url)
+    return f"Webhook set to {url}"
 
 # Responses
 
