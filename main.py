@@ -1,6 +1,10 @@
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import config
 from config import BOT_USERNAME
 
@@ -41,7 +45,7 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 if __name__ == '__main__':
     print('Starting coinflip bot...')
-    app = Application.builder().token(config.TOKEN).build()
+    app = Application.builder().token(config.BOT_TOKEN).build()
 
     # Commands
     app.add_handler(CommandHandler('start', start_command))
