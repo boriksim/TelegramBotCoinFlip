@@ -41,7 +41,7 @@ def home():
     return "Bot is up!"
 
 @app.get("/aaa")
-def home():
+def aaa():
     return "Bot is up!aaa"
 
 
