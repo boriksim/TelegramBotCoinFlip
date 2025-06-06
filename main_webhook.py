@@ -21,20 +21,20 @@ telegram_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_
 telegram_app.add_error_handler(error)
 
 
-@app.route(f"/{config.BOT_TOKEN}", methods=["POST"])
+@app.post(f"/{config.BOT_TOKEN}")
 async def webhook():
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
     await telegram_app.process_update(update)
     return "OK", 200
 
 
-@app.route('/set_webhook', methods=["GET"])
+@app.get('/set_webhook')
 async def set_webhook():
     url = f"https://{config.APP_NAME}.onrender.com/{config.BOT_TOKEN}"
     await telegram_app.bot.set_webhook(url)
     return f"Webhook set to {url}", 200
 
-@app.route("/", methods=["GET"])
+@app.get("/")
 def home():
     return "Bot is up!"
 
