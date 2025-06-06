@@ -40,6 +40,10 @@ async def set_webhook():
 def home():
     return "Bot is up!"
 
+@app.get("/aaa")
+def home():
+    return "Bot is up!aaa"
+
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 10000))
