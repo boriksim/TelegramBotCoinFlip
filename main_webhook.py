@@ -23,6 +23,7 @@ telegram_app.add_error_handler(error)
 
 @app.post(f"/{config.BOT_TOKEN}")
 async def webhook():
+    await telegram_app.initialize()
     update = Update.de_json(request.get_json(force=True), telegram_app.bot)
     await telegram_app.process_update(update)
     return "OK", 200
@@ -31,6 +32,7 @@ async def webhook():
 @app.get('/set_webhook')
 async def set_webhook():
     url = f"https://{config.APP_NAME}.onrender.com/{config.BOT_TOKEN}"
+    await telegram_app.initialize()
     await telegram_app.bot.set_webhook(url)
     return f"Webhook set to {url}", 200
 
@@ -40,7 +42,5 @@ def home():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
-
-port = int(os.environ.get('PORT', 10000))
-app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host="0.0.0.0", port=port)
