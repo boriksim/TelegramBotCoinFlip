@@ -29,10 +29,14 @@ async def webhook():
 
 
 @app.route('/set_webhook', methods=["GET"])
-def set_webhook():
+async def set_webhook():
     url = f"https://{config.APP_NAME}.onrender.com/{config.BOT_TOKEN}"
-    telegram_app.bot.set_webhook(url)
+    await telegram_app.bot.set_webhook(url)
     return f"Webhook set to {url}", 200
+
+@app.route("/", methods=["GET"])
+def home():
+    return "Bot is up!"
 
 
 if __name__ == "__main__":
