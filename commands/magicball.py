@@ -27,5 +27,5 @@ responses = [
 ]
 
 
-async def magicball_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def magicball(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"The magic ball says: <i>{random.choice(responses)}</i>", parse_mode='HTML')

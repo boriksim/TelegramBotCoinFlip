@@ -6,17 +6,17 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 import config
 
-from commands import start_command, help_command, coin_command, dice_command, magicball_command
+import commands as cmd
 from handlers import handle_message, error
 
 app = Flask(__name__)
 telegram_app = Application.builder().token(config.BOT_TOKEN).build()
 
-telegram_app.add_handler(CommandHandler('start', start_command))
-telegram_app.add_handler(CommandHandler('help', help_command))
-telegram_app.add_handler(CommandHandler('coin', coin_command))
-telegram_app.add_handler(CommandHandler('dice', dice_command))
-telegram_app.add_handler(CommandHandler('magicball', magicball_command))
+telegram_app.add_handler(CommandHandler('start', cmd.start))
+telegram_app.add_handler(CommandHandler('help', cmd.call_help))
+telegram_app.add_handler(CommandHandler('coin', cmd.coin))
+telegram_app.add_handler(CommandHandler('dice', cmd.dice))
+telegram_app.add_handler(CommandHandler('magicball', cmd.magicball))
 telegram_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 telegram_app.add_error_handler(error)
 
@@ -36,13 +36,10 @@ async def set_webhook():
     await telegram_app.bot.set_webhook(url)
     return f"Webhook set to {url}", 200
 
+
 @app.get("/")
 def home():
     return "Bot is up!"
-
-@app.get("/aaa")
-def aaa():
-    return "Bot is up!aaa"
 
 
 if __name__ == "__main__":

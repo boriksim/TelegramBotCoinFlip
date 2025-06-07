@@ -8,7 +8,7 @@ load_dotenv()
 import config
 from config import BOT_USERNAME
 
-from commands import start_command, help_command, coin_command, dice_command, magicball_command
+from commands import start, call_help, coin, dice, magicball
 
 
 # Responses
@@ -48,11 +48,11 @@ if __name__ == '__main__':
     app = Application.builder().token(config.BOT_TOKEN).build()
 
     # Commands
-    app.add_handler(CommandHandler('start', start_command))
-    app.add_handler(CommandHandler('help', help_command))
-    app.add_handler(CommandHandler('coin', coin_command))
-    app.add_handler(CommandHandler('dice', dice_command))
-    app.add_handler(CommandHandler('magicball', magicball_command))
+    app.add_handler(CommandHandler('start', start))
+    app.add_handler(CommandHandler('help', call_help))
+    app.add_handler(CommandHandler('coin', coin))
+    app.add_handler(CommandHandler('dice', dice))
+    app.add_handler(CommandHandler('magicball', magicball))
 
     # Messages
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
