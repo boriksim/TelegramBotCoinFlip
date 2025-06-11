@@ -2,12 +2,12 @@ import os
 from flask import Flask, request
 
 from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes
 
 import config
 
 import commands as cmd
-from handlers import handle_message, error
+from handlers import handle_message, error, handle_keyboard_input, handle_inline_keyboard
 
 app = Flask(__name__)
 telegram_app = Application.builder().token(config.BOT_TOKEN).build()
@@ -17,7 +17,10 @@ telegram_app.add_handler(CommandHandler('help', cmd.call_help))
 telegram_app.add_handler(CommandHandler('coin', cmd.coin))
 telegram_app.add_handler(CommandHandler('dice', cmd.dice))
 telegram_app.add_handler(CommandHandler('magicball', cmd.magicball))
-telegram_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
+telegram_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_keyboard_input))
+telegram_app.add_handler(CallbackQueryHandler(handle_inline_keyboard, pattern="^(repeat_|start_menu)"))
+telegram_app.add_handler(MessageHandler(filters.TEXT, handle_message))
 telegram_app.add_error_handler(error)
 
 
