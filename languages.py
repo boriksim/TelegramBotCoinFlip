@@ -76,8 +76,46 @@ LANG = {
             "Очень сомнительно."
         ]
 
+    },
+    "pl": {
+        "start": "Witaj! Wybierz opcję:",
+        "coinflip": "Rzut monetą",
+        "d6": "Rzuć D6",
+        "magicball": "Zadaj pytanie Magicznej Kuli",
+        "coin_text": "To jest",
+        "heads": "Orzeł",
+        "tails": "Reszka",
+        "dice": "Wyrzuciłeś:",
+        "magicball_text": "Magiczna Kula mówi: ",
+        "help": "Wpisz /coin /dice /magicball",
+        "flipping_coin": "Rzucanie monetą...",
+        "rolling_dice": "Rzucanie kostką...",
+        "asking_magicball": "Pytanie Magicznej Kuli...",
+        "responses": [
+            "To pewne.",
+            "Zdecydowanie tak.",
+            "Bez wątpienia.",
+            "Tak – zdecydowanie.",
+            "Możesz na to liczyć.",
+            "Jak widzę, tak.",
+            "Najprawdopodobniej.",
+            "Perspektywy są dobre.",
+            "Tak.",
+            "Znaki wskazują na tak.",
+            "Odpowiedź niejasna, spróbuj ponownie.",
+            "Zapytaj ponownie później.",
+            "Lepiej ci tego teraz nie mówić.",
+            "Nie można teraz przewidzieć.",
+            "Skoncentruj się i zapytaj ponownie.",
+            "Nie licz na to.",
+            "Moja odpowiedź brzmi: nie.",
+            "Moje źródła mówią: nie.",
+            "Perspektywy niezbyt dobre.",
+            "Bardzo wątpliwe."
+        ]
     }
 }
+
 
 def get_text(lang, key):
     return LANG.get(lang, LANG["en"]).get(key, "language error")

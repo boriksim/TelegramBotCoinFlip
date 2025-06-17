@@ -110,7 +110,16 @@ async def handle_lang(update: Update, context: ContextTypes.DEFAULT_TYPE):
     lang_code = query.data.split('_')[1]
     set_user_language(user_id, lang_code)
 
-    await query.edit_message_text("Language updated!" if lang_code == 'en' else "Язык обновлён!")
+    if lang_code == "en":
+        text = "Language updated!"
+    elif lang_code == "pl":
+        text = "Język został zaktualizowany!"
+    elif lang_code == "ru":
+        text = "Язык обновлен!"
+    else:
+        text = "Language error"
+
+    await query.edit_message_text(text)
 
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
