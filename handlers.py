@@ -7,6 +7,9 @@ from telegram.ext import ContextTypes
 
 from config import BOT_USERNAME
 
+from lang_utils import get_user_language, set_user_language
+from languages import get_text
+
 import commands as cmd
 
 
@@ -40,40 +43,74 @@ async def handle_keyboard_input(update: Update, context: ContextTypes.DEFAULT_TY
     text = update.message.text
     remove_keyboard = ReplyKeyboardRemove()
 
+    user_id = update.effective_user.id
+    lang = get_user_language(user_id)
+
+    flipping_coin = get_text(lang, "flipping_coin")
+    rolling_dice = get_text(lang, "rolling_dice")
+    asking_magicball = get_text(lang, "asking_magicball")
+    choose_option = get_text(lang, "start")
+
     if text == "Coinflip":
-        await update.message.reply_text("Flipping the coin...", reply_markup=remove_keyboard)
+        await update.message.reply_text(flipping_coin, reply_markup=remove_keyboard)
         await cmd.coin(update, context)
     elif text == "Roll D6":
-        await update.message.reply_text("Rolling the dice...", reply_markup=remove_keyboard)
+        await update.message.reply_text(rolling_dice, reply_markup=remove_keyboard)
         await cmd.dice(update, context)
     elif text == "Ask Magic Ball":
-        await update.message.reply_text("Asking the Magic Ball...", reply_markup=remove_keyboard)
+        await update.message.reply_text(asking_magicball, reply_markup=remove_keyboard)
         await cmd.magicball(update, context)
     else:
-        await update.message.reply_text("Please choose an option from the keyboard.")
+        await update.message.reply_text(choose_option)
 
 
 async def handle_inline_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
+    user_id = update.effective_user.id
+    lang = get_user_language(user_id)
+
+    coin_text = get_text(lang, "coin_text")
+
+    heads = get_text(lang, "heads")
+    tails = get_text(lang, "tails")
+
+    dice_text = get_text(lang, "dice")
+
+    magicball_text = get_text(lang, "magicball_text")
+    responses = get_text(lang, "responses")
+
+    start_text = get_text(lang, "start")
+
     if query.data == "repeat_coin":
         await context.bot.send_message(chat_id=query.message.chat.id,
-                                       text=f"It\'s <i>{random.choice(['heads', 'tails'])}</i>!", parse_mode='HTML',
+                                       text=f"{coin_text} <i>{random.choice([heads, tails])}</i>!", parse_mode='HTML',
                                        reply_markup=get_repeat_keyboard("coin"))
     elif query.data == "repeat_dice":
         await context.bot.send_message(chat_id=query.message.chat.id,
-                                       text=f"You rolled a <b>{random.randint(1, 6)}</b>", parse_mode='HTML',
+                                       text=f"{dice_text} <b>{random.randint(1, 6)}</b>", parse_mode='HTML',
                                        reply_markup=get_repeat_keyboard("dice"))
     elif query.data == "repeat_magicball":
         await context.bot.send_message(chat_id=query.message.chat.id,
-                                       text=f"The magic ball says: <i>{random.choice(magicball_responses.responses)}</i>",
+                                       text=f"{magicball_text} <i>{random.choice(responses)}</i>",
                                        parse_mode='HTML', reply_markup=get_repeat_keyboard("magicball"))
     elif query.data == "start_menu":
         menu_keyboard = [["Coinflip", "Roll D6", "Ask Magic Ball"]]
         reply_markup = ReplyKeyboardMarkup(menu_keyboard, resize_keyboard=True)
-        await context.bot.send_message(chat_id=query.message.chat.id, text="Hello, choose an option below!",
+        await context.bot.send_message(chat_id=query.message.chat.id, text=start_text,
                                        reply_markup=reply_markup)
+
+
+async def handle_lang(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    user_id = query.from_user.id
+    lang_code = query.data.split('_')[1]
+    set_user_language(user_id, lang_code)
+
+    await query.edit_message_text("Language updated!" if lang_code == 'en' else "Язык обновлён!")
 
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):

@@ -3,6 +3,7 @@ from .help import call_help
 from .coin import coin
 from .dice import dice
 from .magicball import magicball
+from .lang import lang
 
 __all__ = [
     "start",
@@ -10,5 +11,6 @@ __all__ = [
     "coin",
     "dice",
     "magicball",
+    "lang"
 ]
 

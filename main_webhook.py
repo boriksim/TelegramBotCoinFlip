@@ -7,7 +7,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQu
 import config
 
 import commands as cmd
-from handlers import handle_message, error, handle_keyboard_input, handle_inline_keyboard
+from handlers import handle_message, error, handle_keyboard_input, handle_inline_keyboard, handle_lang
 
 app = Flask(__name__)
 telegram_app = Application.builder().token(config.BOT_TOKEN).build()
@@ -17,6 +17,9 @@ telegram_app.add_handler(CommandHandler('help', cmd.call_help))
 telegram_app.add_handler(CommandHandler('coin', cmd.coin))
 telegram_app.add_handler(CommandHandler('dice', cmd.dice))
 telegram_app.add_handler(CommandHandler('magicball', cmd.magicball))
+
+telegram_app.add_handler(CommandHandler('lang', cmd.lang))
+telegram_app.add_handler(CallbackQueryHandler(handle_lang, pattern=r'^lang_'))
 
 telegram_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_keyboard_input))
 telegram_app.add_handler(CallbackQueryHandler(handle_inline_keyboard, pattern="^(repeat_|start_menu)"))

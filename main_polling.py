@@ -4,10 +4,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import lang_utils
+
 import config
 
 import commands as cmd
-from handlers import handle_message, error, handle_keyboard_input, handle_inline_keyboard
+from handlers import handle_message, error, handle_keyboard_input, handle_inline_keyboard, handle_lang
 
 if __name__ == '__main__':
     print('Starting coinflip bot...')
@@ -18,6 +20,9 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('coin', cmd.coin))
     app.add_handler(CommandHandler('dice', cmd.dice))
     app.add_handler(CommandHandler('magicball', cmd.magicball))
+
+    app.add_handler(CommandHandler('lang', cmd.lang))
+    app.add_handler(CallbackQueryHandler(handle_lang, pattern=r'^lang_'))
 
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_keyboard_input))
     app.add_handler(CallbackQueryHandler(handle_inline_keyboard, pattern="^(repeat_|start_menu)"))
