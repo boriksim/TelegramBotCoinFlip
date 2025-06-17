@@ -1,5 +1,3 @@
-from magicball_responses import responses
-
 LANG = {
     "en": {
         "start": "Welcome! Choose an option:",

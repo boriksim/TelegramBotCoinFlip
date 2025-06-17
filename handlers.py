@@ -72,15 +72,11 @@ async def handle_inline_keyboard(update: Update, context: ContextTypes.DEFAULT_T
     lang = get_user_language(user_id)
 
     coin_text = get_text(lang, "coin_text")
-
     heads = get_text(lang, "heads")
     tails = get_text(lang, "tails")
-
     dice_text = get_text(lang, "dice")
-
     magicball_text = get_text(lang, "magicball_text")
     responses = get_text(lang, "responses")
-
     start_text = get_text(lang, "start")
 
     if query.data == "repeat_coin":
