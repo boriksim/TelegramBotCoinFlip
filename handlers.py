@@ -1,6 +1,5 @@
 import random
 from inline_keyboard import get_repeat_keyboard
-import magicball_responses
 
 from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes

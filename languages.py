@@ -34,8 +34,9 @@ LANG = {
             "My sources say no.",
             "Outlook not so good.",
             "Very doubtful."
-        ]
-
+        ],
+        "cat_not_found": "Cat not found 😿",
+        "dog_not_found": "Dog not found 😢",
     },
     "ru": {
         "start": "Добро пожаловать! Выберите опцию:",
@@ -72,7 +73,9 @@ LANG = {
             "Мои источники говорят нет.",
             "Перспективы не очень хорошие.",
             "Очень сомнительно."
-        ]
+        ],
+        "cat_not_found": "Кот не найден 😿",
+        "dog_not_found": "Бобак не найден 😢",
 
     },
     "pl": {
@@ -110,7 +113,9 @@ LANG = {
             "Moje źródła mówią: nie.",
             "Perspektywy niezbyt dobre.",
             "Bardzo wątpliwe."
-        ]
+        ],
+        "cat_not_found": "Nie znaleziono kota 😿",
+        "dog_not_found": "Nie znaleziono psa 😢",
     }
 }
 

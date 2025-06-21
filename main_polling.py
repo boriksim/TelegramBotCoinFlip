@@ -20,6 +20,8 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('coin', cmd.coin))
     app.add_handler(CommandHandler('dice', cmd.dice))
     app.add_handler(CommandHandler('magicball', cmd.magicball))
+    app.add_handler(CommandHandler('cat', cmd.cat))
+    app.add_handler(CommandHandler('dog', cmd.dog))
 
     app.add_handler(CommandHandler('lang', cmd.lang))
     app.add_handler(CallbackQueryHandler(handle_lang, pattern=r'^lang_'))

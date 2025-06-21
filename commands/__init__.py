@@ -4,6 +4,8 @@ from .coin import coin
 from .dice import dice
 from .magicball import magicball
 from .lang import lang
+from .cat import cat
+from .dog import dog
 
 __all__ = [
     "start",
@@ -11,6 +13,8 @@ __all__ = [
     "coin",
     "dice",
     "magicball",
-    "lang"
+    "lang",
+    "cat",
+    "dog"
 ]
 
