@@ -1,8 +1,11 @@
+import os
 import random
 from inline_keyboard import get_repeat_keyboard
 
-from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup
+from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
+
+from PIL import Image, ImageOps, ImageFilter
 
 from config import BOT_USERNAME
 
@@ -10,7 +13,6 @@ from lang_utils import get_user_language, set_user_language
 from languages import get_text
 
 import commands as cmd
-
 
 def handle_response(text: str) -> str:
     processed: str = text.lower()
@@ -63,6 +65,29 @@ async def handle_keyboard_input(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text(choose_option)
 
 
+async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context.user_data.get('awaiting_image'):
+        image = update.message.photo[-1]
+        file = await context.bot.get_file(image.file_id)
+
+        os.makedirs("images", exist_ok=True)
+        file_path = f"images/{update.effective_user.id}_original.jpg"
+        await file.download_to_drive(file_path)
+
+        context.user_data['awaiting_image'] = False
+        context.user_data['image_path'] = file_path
+
+        keyboard = [
+            [InlineKeyboardButton("🎨 Color", callback_data="color_menu"),
+             InlineKeyboardButton("📐 Rotate", callback_data="rotate_menu"),
+             InlineKeyboardButton("🌀 Filters", callback_data="filters_menu")],
+            [InlineKeyboardButton("❌ Cancel", callback_data="cancel")]
+        ]
+
+        await update.message.reply_text("Choose the action to perform on the image",
+                                        reply_markup=InlineKeyboardMarkup(keyboard))
+
+
 async def handle_inline_keyboard(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -95,6 +120,83 @@ async def handle_inline_keyboard(update: Update, context: ContextTypes.DEFAULT_T
         reply_markup = ReplyKeyboardMarkup(menu_keyboard, resize_keyboard=True)
         await context.bot.send_message(chat_id=query.message.chat.id, text=start_text,
                                        reply_markup=reply_markup)
+
+
+    elif query.data == "cancel":
+        await query.edit_message_text("Redaction canceled")
+    elif query.data == "color_menu":
+        keyboard = [
+            [InlineKeyboardButton("Black&White", callback_data="redact_b&w")],
+            [InlineKeyboardButton("Invert", callback_data="redact_invert")],
+            [InlineKeyboardButton("← Return", callback_data="image_menu")]
+        ]
+        await query.edit_message_text("Color effects:", reply_markup=InlineKeyboardMarkup(keyboard))
+    elif query.data == "rotate_menu":
+        keyboard = [
+            [InlineKeyboardButton("90 degrees counter clockwise", callback_data="redact_rotate_90_CC")],
+            [InlineKeyboardButton("90 degrees clockwise", callback_data="redact_rotate_90_C")],
+            [InlineKeyboardButton("180 degrees", callback_data="redact_rotate_180")],
+            [InlineKeyboardButton("← Return", callback_data="image_menu")]
+        ]
+        await query.edit_message_text("Rotation options:", reply_markup=InlineKeyboardMarkup(keyboard))
+    elif query.data == "filters_menu":
+        keyboard = [
+            [InlineKeyboardButton("Blur", callback_data="redact_filter_blur"),
+             InlineKeyboardButton("Contour", callback_data="redact_filter_contour"),
+             InlineKeyboardButton("Detail", callback_data="redact_filter_detail"),],
+            [InlineKeyboardButton("Edge enchance", callback_data="redact_filter_edge_enchance"),
+             InlineKeyboardButton("Emboss", callback_data="redact_filter_emboss"),
+             InlineKeyboardButton("Find edges", callback_data="redact_filter_find_deges"),],
+            [InlineKeyboardButton("← Return", callback_data="image_menu")]
+        ]
+        await query.edit_message_text("Filter effects:", reply_markup=InlineKeyboardMarkup(keyboard))
+    elif query.data == "image_menu":
+        keyboard = [
+            [InlineKeyboardButton("🎨 Color", callback_data="color_menu")],
+            [InlineKeyboardButton("📐 Rotate", callback_data="rotate_menu")],
+            [InlineKeyboardButton("🌀 Filters", callback_data="filters_menu")],
+            [InlineKeyboardButton("❌ Cancel", callback_data="cancel")]
+        ]
+        await context.bot.send_message(chat_id=query.message.chat.id, text="Choose the action to perform on the image",
+                                       reply_markup=InlineKeyboardMarkup(keyboard))
+
+    elif query.data[:7] == "redact_":
+        image_path = context.user_data.get('image_path')
+        if not image_path or not os.path.exists(image_path):
+            await query.edit_message_text("Image not found")
+
+        processed_path = f"images/{update.effective_user.id}_processed.jpg"
+        image = Image.open(image_path)
+
+        if query.data == "redact_b&w":
+            image = image.convert("L")
+        elif query.data == "redact_invert":
+            image = ImageOps.invert(image.convert("RGB"))
+
+        elif query.data == "redact_rotate_90_CC":
+            image = image.rotate(angle=90, expand=True)
+        elif query.data == "redact_rotate_90_C":
+            image = image.rotate(angle=-90, expand=True)
+        elif query.data == "redact_rotate_180":
+            image = image.rotate(angle=180, expand=True)
+
+        elif query.data == "redact_filter_blur":
+            image = image.filter(ImageFilter.GaussianBlur(radius=10))
+        elif query.data == "redact_filter_contour":
+            image = image.filter(ImageFilter.CONTOUR)
+        elif query.data == "redact_filter_detail":
+            image = image.filter(ImageFilter.DETAIL)
+        elif query.data == "redact_filter_edge_enchance":
+            image = image.filter(ImageFilter.EDGE_ENHANCE)
+        elif query.data == "redact_filter_emboss":
+            image = image.filter(ImageFilter.EMBOSS)
+        elif query.data == "redact_filter_find_edges":
+            image = image.filter(ImageFilter.FIND_EDGES)
+
+
+        image.save(processed_path)
+        await context.bot.send_photo(chat_id=update.effective_chat.id, photo=open(processed_path, "rb"),
+                                     caption=f"Here is your redacted image")
 
 
 async def handle_lang(update: Update, context: ContextTypes.DEFAULT_TYPE):

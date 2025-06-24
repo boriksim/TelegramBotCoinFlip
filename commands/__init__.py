@@ -6,6 +6,7 @@ from .magicball import magicball
 from .lang import lang
 from .cat import cat
 from .dog import dog
+from .stylize import stylize
 
 __all__ = [
     "start",
@@ -15,6 +16,7 @@ __all__ = [
     "magicball",
     "lang",
     "cat",
-    "dog"
+    "dog",
+    "stylize",
 ]
 
