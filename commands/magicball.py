@@ -1,10 +1,9 @@
 import random
-import magicball_responses
 
 from telegram import Update
 from telegram.ext import ContextTypes
 
-from inline_keyboard import get_repeat_keyboard
+from repeat_keyboard import get_repeat_keyboard
 
 from lang_utils import get_user_language
 from languages import get_text

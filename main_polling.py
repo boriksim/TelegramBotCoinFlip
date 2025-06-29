@@ -4,8 +4,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import lang_utils
-
 import config
 
 import commands as cmd

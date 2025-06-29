@@ -10,7 +10,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     welcome = get_text(lang, "start")
 
-    menu_keyboard = [["Coinflip", "Roll D6", "Ask Magic Ball"]]
+    menu_keyboard = [["Coinflip", "Roll D6", "Ask Magic Ball"],
+                     ["Cat", "Dog", "Help"],
+                     ["Language", "Stylize"]]
 
     reply_markup = ReplyKeyboardMarkup(menu_keyboard, resize_keyboard=True)
 

@@ -1,6 +1,6 @@
 import os
 import random
-from inline_keyboard import get_repeat_keyboard
+from repeat_keyboard import get_repeat_keyboard
 
 from telegram import Update, ReplyKeyboardRemove, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
@@ -50,6 +50,11 @@ async def handle_keyboard_input(update: Update, context: ContextTypes.DEFAULT_TY
     flipping_coin = get_text(lang, "flipping_coin")
     rolling_dice = get_text(lang, "rolling_dice")
     asking_magicball = get_text(lang, "asking_magicball")
+    getting_cat = get_text(lang, "getting_cat")
+    getting_dog = get_text(lang, "getting_dog")
+    getting_help = get_text(lang, "help")
+    getting_language = get_text(lang, "getting_language")
+    getting_stylize = get_text(lang, "getting_stylize")
     choose_option = get_text(lang, "start")
 
     if text == "Coinflip":
@@ -61,12 +66,34 @@ async def handle_keyboard_input(update: Update, context: ContextTypes.DEFAULT_TY
     elif text == "Ask Magic Ball":
         await update.message.reply_text(asking_magicball, reply_markup=remove_keyboard)
         await cmd.magicball(update, context)
+    elif text == "Cat":
+        await  update.message.reply_text(getting_cat, reply_markup=remove_keyboard)
+        await cmd.cat(update, context)
+    elif text == "Dog":
+        await  update.message.reply_text(getting_dog, reply_markup=remove_keyboard)
+        await cmd.dog(update, context)
+    elif text == "Help":
+        await  update.message.reply_text(getting_help, reply_markup=remove_keyboard)
+    elif text == "Language":
+        await  update.message.reply_text(getting_language, reply_markup=remove_keyboard)
+        await cmd.lang(update, context)
+    elif text == "Stylize":
+        await  update.message.reply_text(getting_stylize, reply_markup=remove_keyboard)
+        await cmd.stylize(update, context)
     else:
         await update.message.reply_text(choose_option)
 
 
 async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context.user_data.get('awaiting_image'):
+        user_id = update.effective_user.id
+        lang = get_user_language(user_id)
+
+        color = get_text(lang, "color")
+        rotate = get_text(lang, "rotate")
+        filter_ = get_text(lang, "filter")
+        cancel = get_text(lang, "cancel")
+
         image = update.message.photo[-1]
         file = await context.bot.get_file(image.file_id)
 
@@ -78,10 +105,10 @@ async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data['image_path'] = file_path
 
         keyboard = [
-            [InlineKeyboardButton("🎨 Color", callback_data="color_menu"),
-             InlineKeyboardButton("📐 Rotate", callback_data="rotate_menu"),
-             InlineKeyboardButton("🌀 Filters", callback_data="filters_menu")],
-            [InlineKeyboardButton("❌ Cancel", callback_data="cancel")]
+            [InlineKeyboardButton(color, callback_data="color_menu"),
+             InlineKeyboardButton(rotate, callback_data="rotate_menu"),
+             InlineKeyboardButton(filter_, callback_data="filters_menu")],
+            [InlineKeyboardButton(cancel, callback_data="cancel")]
         ]
 
         await update.message.reply_text("Choose the action to perform on the image",
@@ -102,6 +129,29 @@ async def handle_inline_keyboard(update: Update, context: ContextTypes.DEFAULT_T
     magicball_text = get_text(lang, "magicball_text")
     responses = get_text(lang, "responses")
     start_text = get_text(lang, "start")
+    redaction_cancel = get_text(lang, "redaction_cancel")
+    color = get_text(lang, "color")
+    rotate = get_text(lang, "rotate")
+    filter_ = get_text(lang, "filter")
+    cancel = get_text(lang, "cancel")
+
+    b_and_w = get_text(lang, "b_and_w")
+    invert = get_text(lang, "invert")
+    return_ = get_text(lang, "return")
+    color_effects = get_text(lang, "color_effects")
+    r_cc_90 = get_text(lang, "r_cc_90")
+    r_c_90 = get_text(lang, "r_c_90")
+    r_180 = get_text(lang, "r_180")
+    rotate_options = get_text(lang, "rotate_options")
+    blur = get_text(lang, "blur")
+    contour = get_text(lang, "contour")
+    detail = get_text(lang, "detail")
+    edge_enchance = get_text(lang, "edge_enchance")
+    emboss = get_text(lang, "emboss")
+    find_edges = get_text(lang, "find_edges")
+    filter_effects = get_text(lang, "filter_effects")
+    choose_action_image = get_text(lang, "choose_action_image")
+    redacted_image = get_text(lang, "redacted_image")
 
     if query.data == "repeat_coin":
         await context.bot.send_message(chat_id=query.message.chat.id,
@@ -116,48 +166,50 @@ async def handle_inline_keyboard(update: Update, context: ContextTypes.DEFAULT_T
                                        text=f"{magicball_text} <i>{random.choice(responses)}</i>",
                                        parse_mode='HTML', reply_markup=get_repeat_keyboard("magicball"))
     elif query.data == "start_menu":
-        menu_keyboard = [["Coinflip", "Roll D6", "Ask Magic Ball"]]
+        menu_keyboard = [["Coinflip", "Roll D6", "Ask Magic Ball"],
+                         ["Cat", "Dog", "Help"],
+                         ["Language", "Stylize"]]
         reply_markup = ReplyKeyboardMarkup(menu_keyboard, resize_keyboard=True)
         await context.bot.send_message(chat_id=query.message.chat.id, text=start_text,
                                        reply_markup=reply_markup)
-
-
     elif query.data == "cancel":
-        await query.edit_message_text("Redaction canceled")
+        await query.edit_message_text(redaction_cancel)
+
+
     elif query.data == "color_menu":
         keyboard = [
-            [InlineKeyboardButton("Black&White", callback_data="redact_b&w")],
-            [InlineKeyboardButton("Invert", callback_data="redact_invert")],
-            [InlineKeyboardButton("← Return", callback_data="image_menu")]
+            [InlineKeyboardButton(b_and_w, callback_data="redact_b&w")],
+            [InlineKeyboardButton(invert, callback_data="redact_invert")],
+            [InlineKeyboardButton(return_, callback_data="image_menu")]
         ]
-        await query.edit_message_text("Color effects:", reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text(color_effects, reply_markup=InlineKeyboardMarkup(keyboard))
     elif query.data == "rotate_menu":
         keyboard = [
-            [InlineKeyboardButton("90 degrees counter clockwise", callback_data="redact_rotate_90_CC")],
-            [InlineKeyboardButton("90 degrees clockwise", callback_data="redact_rotate_90_C")],
-            [InlineKeyboardButton("180 degrees", callback_data="redact_rotate_180")],
-            [InlineKeyboardButton("← Return", callback_data="image_menu")]
+            [InlineKeyboardButton(r_cc_90, callback_data="redact_rotate_90_CC")],
+            [InlineKeyboardButton(r_c_90, callback_data="redact_rotate_90_C")],
+            [InlineKeyboardButton(r_180, callback_data="redact_rotate_180")],
+            [InlineKeyboardButton(return_, callback_data="image_menu")]
         ]
-        await query.edit_message_text("Rotation options:", reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text(rotate_options, reply_markup=InlineKeyboardMarkup(keyboard))
     elif query.data == "filters_menu":
         keyboard = [
-            [InlineKeyboardButton("Blur", callback_data="redact_filter_blur"),
-             InlineKeyboardButton("Contour", callback_data="redact_filter_contour"),
-             InlineKeyboardButton("Detail", callback_data="redact_filter_detail"),],
-            [InlineKeyboardButton("Edge enchance", callback_data="redact_filter_edge_enchance"),
-             InlineKeyboardButton("Emboss", callback_data="redact_filter_emboss"),
-             InlineKeyboardButton("Find edges", callback_data="redact_filter_find_deges"),],
-            [InlineKeyboardButton("← Return", callback_data="image_menu")]
+            [InlineKeyboardButton(blur, callback_data="redact_filter_blur"),
+             InlineKeyboardButton(contour, callback_data="redact_filter_contour"),
+             InlineKeyboardButton(detail, callback_data="redact_filter_detail"),],
+            [InlineKeyboardButton(edge_enchance, callback_data="redact_filter_edge_enchance"),
+             InlineKeyboardButton(emboss, callback_data="redact_filter_emboss"),
+             InlineKeyboardButton(find_edges, callback_data="redact_filter_find_deges"),],
+            [InlineKeyboardButton(return_, callback_data="image_menu")]
         ]
-        await query.edit_message_text("Filter effects:", reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.edit_message_text(filter_effects, reply_markup=InlineKeyboardMarkup(keyboard))
     elif query.data == "image_menu":
         keyboard = [
-            [InlineKeyboardButton("🎨 Color", callback_data="color_menu")],
-            [InlineKeyboardButton("📐 Rotate", callback_data="rotate_menu")],
-            [InlineKeyboardButton("🌀 Filters", callback_data="filters_menu")],
-            [InlineKeyboardButton("❌ Cancel", callback_data="cancel")]
+            [InlineKeyboardButton(color, callback_data="color_menu")],
+            [InlineKeyboardButton(rotate, callback_data="rotate_menu")],
+            [InlineKeyboardButton(filter_, callback_data="filters_menu")],
+            [InlineKeyboardButton(cancel, callback_data="cancel")]
         ]
-        await context.bot.send_message(chat_id=query.message.chat.id, text="Choose the action to perform on the image",
+        await context.bot.send_message(chat_id=query.message.chat.id, text=choose_action_image,
                                        reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif query.data[:7] == "redact_":
@@ -196,7 +248,7 @@ async def handle_inline_keyboard(update: Update, context: ContextTypes.DEFAULT_T
 
         image.save(processed_path)
         await context.bot.send_photo(chat_id=update.effective_chat.id, photo=open(processed_path, "rb"),
-                                     caption=f"Here is your redacted image")
+                                     caption=redacted_image)
 
 
 async def handle_lang(update: Update, context: ContextTypes.DEFAULT_TYPE):

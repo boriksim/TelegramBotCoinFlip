@@ -1,5 +1,5 @@
 import random
-from inline_keyboard import get_repeat_keyboard
+from repeat_keyboard import get_repeat_keyboard
 
 from telegram import Update
 from telegram.ext import ContextTypes
