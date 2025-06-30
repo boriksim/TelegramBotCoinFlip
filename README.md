@@ -12,7 +12,7 @@ This is a simple Telegram bot written in Python:
 - `/cat` — Sends a random cat photo.
 - `/dog` — Sends a random dog photo.
 - `/lang` — Choice of user language.
-- `/stylize` — Redaction of your image.
+- `/stylize` — Stylizing of your image.
 
 ---
 
